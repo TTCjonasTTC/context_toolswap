@@ -1,0 +1,33 @@
+[mod]
+id = "toolswap"
+version = "0.1.0"
+priority = 100
+
+[compatibility]
+horizon_revision = "6475f62f3c834b7489e1816bf47f47ea5eb2b879"
+
+[[module]]
+id = "runtime"
+file = "crates/horizon-client/src/game.rs"
+name = "toolswap"
+source = "runtime.rs"
+
+[[injection]]
+id = "tick"
+kind = "HEAD"
+target = "horizon_client::game::hand::Game<'_>::tick_local_hand"
+helper = "tick.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[injection]]
+id = "command"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::commands::Game<'_>::run_command"
+helper = "command.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "command", ty = "&str", value = "command" },
+]
